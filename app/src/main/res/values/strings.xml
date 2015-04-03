@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">simple_TCPIP_chat_app_v2</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_chat_list">ChatListActivity</string>
+    <string name="title_activity_chat">ChatActivity</string>
+</resources>
