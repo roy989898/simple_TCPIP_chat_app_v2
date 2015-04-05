@@ -1,8 +1,5 @@
 package pom.poly.com.simple_tcpip_chat_app_v2;
 
-/**
- * Created by User on 3/4/2015.
- */
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,6 +14,11 @@ public class BuddyListSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_PHONENUMNER = "phonenumber";
 
+    public static final String TABLE_CHAT_HISTORY = "chats";
+    public static final String COLUMN_CHAT_HISTORY_ID = "_id";
+    public static final String COLUMN_CHAT_HISTORY_PHONENUMNER = "phonenumber";
+    public static final String COLUMN_MESSAGE_PHONENUMNER = "phonenumber";
+
     private static final String DATABASE_NAME = "buddys.db";
     private static final int DATABASE_VERSION = 1;
 
@@ -24,6 +26,11 @@ public class BuddyListSQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_CREATE = "create table "
             + TABLE_BUDDYS + "(" + COLUMN_ID
             + " integer primary key autoincrement, " + COLUMN_PHONENUMNER
+            + " text not null);";
+
+    private static final String DATABASE_CHAT_HISTORY_CREATE = "create table "
+            + TABLE_CHAT_HISTORY + "(" + COLUMN_CHAT_HISTORY_ID
+            + " integer primary key autoincrement, " +COLUMN_MESSAGE_PHONENUMNER+"  text not null, "+ COLUMN_CHAT_HISTORY_PHONENUMNER
             + " text not null);";
 
     public BuddyListSQLiteHelper(Context context){
@@ -39,6 +46,7 @@ public class BuddyListSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE);
+        db.execSQL(DATABASE_CHAT_HISTORY_CREATE);
 
     }
 
@@ -68,6 +76,7 @@ public class BuddyListSQLiteHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUDDYS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHAT_HISTORY);
         onCreate(db);
 
     }
