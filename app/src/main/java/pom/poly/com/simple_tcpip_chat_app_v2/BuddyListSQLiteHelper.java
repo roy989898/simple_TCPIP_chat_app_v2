@@ -17,7 +17,7 @@ public class BuddyListSQLiteHelper extends SQLiteOpenHelper {
     public static final String TABLE_CHAT_HISTORY = "chats";
     public static final String COLUMN_CHAT_HISTORY_ID = "_id";
     public static final String COLUMN_CHAT_HISTORY_PHONENUMNER = "phonenumber";
-    public static final String COLUMN_MESSAGE_PHONENUMNER = "phonenumber";
+    public static final String COLUMN_MESSAGE_PHONENUMNER = "message";
 
     private static final String DATABASE_NAME = "buddys.db";
     private static final int DATABASE_VERSION = 1;
@@ -46,7 +46,7 @@ public class BuddyListSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE);
-        db.execSQL(DATABASE_CHAT_HISTORY_CREATE);
+       db.execSQL(DATABASE_CHAT_HISTORY_CREATE);
 
     }
 
@@ -76,7 +76,7 @@ public class BuddyListSQLiteHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUDDYS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHAT_HISTORY);
+      db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHAT_HISTORY);
         onCreate(db);
 
     }
