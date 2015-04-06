@@ -6,4 +6,5 @@ package pom.poly.com.simple_tcpip_chat_app_v2;
 public class Config {
     public final static String SP_PHONE_KEY="phonenumber";
     public final static String SP_NAME="userphone";
+    public final static String INTENT_PHONENUMBER = "phonenumber";
 }

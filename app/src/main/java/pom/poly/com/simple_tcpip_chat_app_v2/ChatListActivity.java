@@ -3,10 +3,11 @@ package pom.poly.com.simple_tcpip_chat_app_v2;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -112,6 +112,7 @@ public class ChatListActivity extends ActionBarActivity {
         buddy_listView=(ListView)findViewById(R.id.lv_buddy);
         adapter=new ArrayAdapter(this,android.R.layout.simple_list_item_1,BuddyArray);
         buddy_listView.setAdapter(adapter);
+        //set List iteam long click
         buddy_listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int c, long id) {
@@ -128,6 +129,20 @@ public class ChatListActivity extends ActionBarActivity {
                 return true;
             }
         });
+
+        //set Lis iteam click
+        buddy_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                intent.putExtra(Config.INTENT_PHONENUMBER, (String) BuddyArray.get(position));
+                startActivity(intent);
+            }
+        });
+
+
+
+
     }
     private void reflash_Budylist(){
         adapter.notifyDataSetChanged();
