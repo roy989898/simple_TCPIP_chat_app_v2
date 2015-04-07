@@ -108,7 +108,8 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         //this code just for try the TCPIP
-        Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveIntentService.class);
+        //Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveIntentService.class);// old method, cnt use IntentService
+        Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveService.class);
         startService(mServiceIntent);
     }
 

@@ -22,20 +22,25 @@
         </activity>
         <activity
             android:name=".ChatListActivity"
-            android:label="@string/title_activity_chat_list"></activity>
+            android:label="@string/title_activity_chat_list" />
         <activity
             android:name=".ChatActivity"
-            android:label="@string/title_activity_chat"></activity>
+            android:label="@string/title_activity_chat" />
 
         <service
             android:name=".MessageReciveIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <provider
             android:name=".BuddyAndChatListContentProvider"
             android:authorities="pom.poly.com.simple_tcpip_chat_app_v2.BuddyAndChatListContentProvider"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true" />
+
+        <service
+            android:name=".MessageReciveService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
