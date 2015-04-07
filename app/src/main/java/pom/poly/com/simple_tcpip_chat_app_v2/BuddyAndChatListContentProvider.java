@@ -17,16 +17,17 @@ public class BuddyAndChatListContentProvider extends ContentProvider {
     private static final int URI_ROOT = 0, DB_TABLE_BUDDY = 1, DB_TABLE_CHATHISTORY = 2;
     private static final UriMatcher sUriMatcher = new UriMatcher(URI_ROOT);
 
-    static {
-        sUriMatcher.addURI(AUTHORITY, BuddyListSQLiteHelper.TABLE_BUDDYS, DB_TABLE_BUDDY);
-        sUriMatcher.addURI(AUTHORITY, BuddyListSQLiteHelper.TABLE_CHAT_HISTORY, DB_TABLE_CHATHISTORY);
-    }
 
     private static String AUTHORITY = "pom.poly.com.simple_tcpip_chat_app_v2.BuddyAndChatListContentProvider";
     private static final String CONTENT_UR_S = "content://" + AUTHORITY + "/";
     public static final Uri CONTENT_URI = Uri.parse(CONTENT_UR_S);
     public static final Uri CONTENT_URI_BUDDY = Uri.parse(CONTENT_UR_S + BuddyListSQLiteHelper.TABLE_BUDDYS);
     public static final Uri CONTENT_URI_CHAT = Uri.parse(CONTENT_UR_S + BuddyListSQLiteHelper.TABLE_CHAT_HISTORY);
+
+    static {
+        sUriMatcher.addURI(AUTHORITY, BuddyListSQLiteHelper.TABLE_BUDDYS, DB_TABLE_BUDDY);
+        sUriMatcher.addURI(AUTHORITY, BuddyListSQLiteHelper.TABLE_CHAT_HISTORY, DB_TABLE_CHATHISTORY);
+    }
     private SQLiteDatabase database;
 
     public BuddyAndChatListContentProvider() {
