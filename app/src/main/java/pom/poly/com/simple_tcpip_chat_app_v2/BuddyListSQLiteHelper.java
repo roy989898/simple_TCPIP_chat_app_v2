@@ -13,25 +13,24 @@ public class BuddyListSQLiteHelper extends SQLiteOpenHelper {
     public static final String TABLE_BUDDYS = "buddys";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_PHONENUMNER = "phonenumber";
-
-    public static final String TABLE_CHAT_HISTORY = "chats";
-    public static final String COLUMN_CHAT_HISTORY_ID = "_id";
-    public static final String COLUMN_CHAT_HISTORY_PHONENUMNER = "phonenumber";
-    public static final String COLUMN_MESSAGE_PHONENUMNER = "message";
-
-    private static final String DATABASE_NAME = "buddys.db";
-    private static final int DATABASE_VERSION = 1;
-
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "
             + TABLE_BUDDYS + "(" + COLUMN_ID
             + " integer primary key autoincrement, " + COLUMN_PHONENUMNER
             + " text not null);";
-
+    public static final String TABLE_CHAT_HISTORY = "chats";
+    public static final String COLUMN_CHAT_HISTORY_ID = "_id";
+    public static final String COLUMN_CHAT_HISTORY_PHONENUMNER = "phonenumber";
+    public static final String COLUMN_CHAT_HISTORY_MESSAGE = "message";
+    public static final String COLUMN_CHAT_HISTORY_MTYPE = "type";
     private static final String DATABASE_CHAT_HISTORY_CREATE = "create table "
             + TABLE_CHAT_HISTORY + "(" + COLUMN_CHAT_HISTORY_ID
-            + " integer primary key autoincrement, " +COLUMN_MESSAGE_PHONENUMNER+"  text not null, "+ COLUMN_CHAT_HISTORY_PHONENUMNER
+            + " integer primary key autoincrement, " + COLUMN_CHAT_HISTORY_MESSAGE + "  text not null, " + COLUMN_CHAT_HISTORY_MTYPE + "  text not null, " + COLUMN_CHAT_HISTORY_PHONENUMNER
             + " text not null);";
+    public static final String MESSAGE_TYPE_RECEIVE = "receive";
+    public static final String MESSAGE_TYPE_SEND = "send";
+    public static final String DATABASE_NAME = "buddys.db";
+    private static final int DATABASE_VERSION = 1;
 
     public BuddyListSQLiteHelper(Context context){
         super(context, DATABASE_NAME, null,DATABASE_VERSION);

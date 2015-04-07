@@ -1,11 +1,11 @@
 package pom.poly.com.simple_tcpip_chat_app_v2;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -24,10 +24,12 @@ public class ChatListActivity extends ActionBarActivity {
     private ListView buddy_listView;
     private ArrayAdapter adapter;
     private ArrayList BuddyArray;
+    private ContentResolver mContRes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContRes = getContentResolver();
         setContentView(R.layout.activity_chat_list);
         BuddyArray=buddydata_fromsqltoArray();
         initate_the_buddyListview();
@@ -58,17 +60,14 @@ public class ChatListActivity extends ActionBarActivity {
             new AlertDialog.Builder(this).setTitle("Please input user phone number").setIcon(android.R.drawable.ic_dialog_info).setView(edPhonenumber).setPositiveButton("Enter", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //get the BUDDY Sql helper
-                    BuddyListSQLiteHelper budySQLHelp=new BuddyListSQLiteHelper(getApplicationContext());
-                    //get the databases
-                    SQLiteDatabase database=budySQLHelp.getWritableDatabase();
+
                     //perpare the value that insert to the SQL databases
                     ContentValues values=new ContentValues();
                     values.put(BuddyListSQLiteHelper.COLUMN_PHONENUMNER,edPhonenumber.getText().toString());
                     //insert
-                    database.insert(BuddyListSQLiteHelper.TABLE_BUDDYS,null,values);
-                    //close
-                    budySQLHelp.close();
+                    // database.insert(BuddyListSQLiteHelper.TABLE_BUDDYS,null,values);
+                    mContRes.insert(BuddyAndChatListContentProvider.CONTENT_URI_BUDDY, values);
+
                     //it is because add newdata,need reflash the ListView
                     BuddyArray=buddydata_fromsqltoArray();
                     initate_the_buddyListview();
@@ -88,13 +87,8 @@ public class ChatListActivity extends ActionBarActivity {
      */
     private ArrayList buddydata_fromsqltoArray(){
         ArrayList BuddyArray=new ArrayList();
-        //get the BUDDY Sql helper
-        BuddyListSQLiteHelper budySQLHelp=new BuddyListSQLiteHelper(getApplicationContext());
-        //get the databases
-        SQLiteDatabase database=budySQLHelp.getReadableDatabase();
-        String[] d_column={BuddyListSQLiteHelper.COLUMN_PHONENUMNER};
-        //query to the database,need all the phone number
-        Cursor cursor=database.query(BuddyListSQLiteHelper.TABLE_BUDDYS, d_column, null, null, null, null, null);
+
+        Cursor cursor = mContRes.query(BuddyAndChatListContentProvider.CONTENT_URI_BUDDY, null, null, null, null);
         //move the data from ccursor to arraylist
         if(cursor.moveToFirst()){
             do{
@@ -102,8 +96,7 @@ public class ChatListActivity extends ActionBarActivity {
             }while(cursor.moveToNext());
 
         }
-        //close
-        budySQLHelp.close();
+
         return BuddyArray;
 
 
@@ -116,13 +109,10 @@ public class ChatListActivity extends ActionBarActivity {
         buddy_listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int c, long id) {
-                //delete the data in Sqlite
-                //get the BUDDY Sql helper
-                BuddyListSQLiteHelper budySQLHelp=new BuddyListSQLiteHelper(getApplicationContext());
-                //get the databases
-                SQLiteDatabase database=budySQLHelp.getWritableDatabase();
-                //delete data in SQL
-                database.delete(BuddyListSQLiteHelper.TABLE_BUDDYS,BuddyListSQLiteHelper.COLUMN_PHONENUMNER+"=?",new String[]{(String)BuddyArray.get(c)});
+
+                //delete data in SQL by ContentProvider
+
+                mContRes.delete(BuddyAndChatListContentProvider.CONTENT_URI_BUDDY, BuddyListSQLiteHelper.COLUMN_PHONENUMNER, new String[]{(String) BuddyArray.get(c)});
                 //delete data in ArrayList
                 BuddyArray.remove(c);
                 reflash_Budylist();

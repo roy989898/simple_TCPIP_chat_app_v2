@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pom.poly.com.simple_tcpip_chat_app_v2" >
+    package="pom.poly.com.simple_tcpip_chat_app_v2">
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:noHistory="true" >
-//back button skip the MainActivity
+            android:noHistory="true">
+            //back button skip the MainActivity
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,12 +22,20 @@
         </activity>
         <activity
             android:name=".ChatListActivity"
-            android:label="@string/title_activity_chat_list" >
-        </activity>
+            android:label="@string/title_activity_chat_list"></activity>
         <activity
             android:name=".ChatActivity"
-            android:label="@string/title_activity_chat" >
-        </activity>
+            android:label="@string/title_activity_chat"></activity>
+
+        <service
+            android:name=".MessageReciveIntentService"
+            android:exported="false"></service>
+
+        <provider
+            android:name=".BuddyAndChatListContentProvider"
+            android:authorities="pom.poly.com.simple_tcpip_chat_app_v2.BuddyAndChatListContentProvider"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>
