@@ -1,8 +1,8 @@
 package pom.poly.com.simple_tcpip_chat_app_v2;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -12,7 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 
 
@@ -47,6 +51,8 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         //temp for test the Chatarray
 
         btSend.setOnClickListener(this);
+
+
         reflashAndShowAlltheChatHistory();
 
 
@@ -108,10 +114,98 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         //this code just for try the TCPIP
-        //Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveIntentService.class);// old method, cnt use IntentService
-        Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveService.class);
-        startService(mServiceIntent);
+        // Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveIntentService.class);// old method, cnt use IntentService
+        //TODO send message here to the server, use a new Socket
+        new SendMessageTask().execute();
+
+
+
     }
 
+    class SendMessageTask extends AsyncTask {
+        /**
+         * Creates a new asynchronous task. This constructor must be invoked on the UI thread.
+         */
+        private static final int SUCCESS_SEND = 1;
+        private static final int FAIL_SEND = -1;
 
+        public SendMessageTask() {
+            super();
+        }
+
+        /**
+         * Runs on the UI thread before {@link #doInBackground}.
+         *
+         * @see #onPostExecute
+         * @see #doInBackground
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p/>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param o The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            if ((Integer) o == FAIL_SEND) {
+                //send not success
+                Toast.makeText(getApplicationContext(), "can't,try later", Toast.LENGTH_LONG).show();
+            } else {
+                //Success
+                edSend.setText("");
+            }
+        }
+
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         * <p/>
+         * This method can call {@link #publishProgress} to publish updates
+         * on the UI thread.
+         *
+         * @param params The parameters of the task.
+         * @return A result, defined by the subclass of this task.
+         * @see #onPreExecute()
+         * @see #onPostExecute
+         * @see #publishProgress
+         */
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            Socket socket = null;
+            try {
+                socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);
+                PrintWriter os = new PrintWriter(socket.getOutputStream());
+                // sen the Message
+                os.println(edSend.getText().toString());
+                os.flush();
+                Thread.sleep(400);
+                os.close();//关闭Socket输出流
+                socket.close();//关闭Socket
+                return SUCCESS_SEND;//
+            } catch (IOException e) {
+                e.printStackTrace();
+                return FAIL_SEND;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return FAIL_SEND;
+            }
+
+
+        }
+
+
+    }
 }

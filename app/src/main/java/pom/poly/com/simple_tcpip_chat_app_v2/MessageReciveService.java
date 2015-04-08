@@ -12,10 +12,12 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class MessageReciveService extends Service {
-    ReceiveMessageThread rmt;
+    private ReceiveMessageThread rmt;
     private Socket socket;
     private BufferedReader is;
     private PrintWriter os;
+    private int threadNumber = 0;
+
 
     public MessageReciveService() {
     }
@@ -26,14 +28,6 @@ public class MessageReciveService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        try {
-            socket = new Socket("192.168.56.1", 100);
-            is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            os = new PrintWriter(socket.getOutputStream());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     /**
@@ -77,7 +71,12 @@ public class MessageReciveService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         rmt = new ReceiveMessageThread();
-        rmt.start();
+        if (threadNumber < 1) {// prevent to create more than one thread at a Client to connect to the server
+            rmt.start();
+            threadNumber++;
+            Log.d("onHandleIntent", "Thread create");
+        }
+
         return START_REDELIVER_INTENT;
     }
 
@@ -97,6 +96,7 @@ public class MessageReciveService extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        threadNumber = threadNumber - 1;
 
     }
 
@@ -107,20 +107,25 @@ public class MessageReciveService extends Service {
     }
 
     private class ReceiveMessageThread extends Thread {
+
         public void run() {
             try {
-
-
-                // os.println("get time");
-                //os.flush(); //刷新输出流，使Server马上收到该字符串
-                //Log.d("onHandleIntent", "after flush");
+                socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);
+                is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                os = new PrintWriter(socket.getOutputStream());
                 while (true) {
+                    //os.println("get time");//for test
+                    //os.flush();//for test
+                    Log.d("onHandleIntent", "in loop");
                     String str = is.readLine();//从系统标准输入读入一字符串
                     Log.d("onHandleIntent", "From server: " + str);
+                    //TODO to classif the different typr of message adn save them to the Sqlite server use 正規表示式 ,asyn task
+                    //TODO  Notify the message and show the to the UI
+
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
 
-
-            } catch (IOException e) {
 
             }
 

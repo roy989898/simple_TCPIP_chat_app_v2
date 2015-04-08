@@ -21,6 +21,7 @@ public class MessageReciveIntentService extends IntentService {
     private Socket socket;
     private BufferedReader is;
     private PrintWriter os;
+    private String message = "";
 
 
     public MessageReciveIntentService() {
@@ -49,7 +50,7 @@ public class MessageReciveIntentService extends IntentService {
         try {
             //192.168.56.1
             //192.168.31.170
-            socket = new Socket("192.168.56.1", 100);
+            socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             os = new PrintWriter(socket.getOutputStream());
 
@@ -65,9 +66,21 @@ public class MessageReciveIntentService extends IntentService {
                 Log.d("onHandleIntent", "From server: " + str);
                 Thread.sleep(10000);
             }
+            /*do {
+                os.println("get time");
+                try {
+                    if (!is.ready()) {
+                        if (message != null) {
+                            message = "";
+                        }
+                    }
+                    int num = is.read();
+                    message += Character.toString((char) num);
+                    Log.d("onHandleIntent", "From server: " + message);
+                } catch (Exception classNot) {
+                }
 
-
-
+            } while (!message.equals("bye"));*/
 
 
         } catch (Exception e) {

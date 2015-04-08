@@ -30,6 +30,12 @@ public class ChatListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContRes = getContentResolver();
+
+        //start the Receive Service
+        Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveService.class);
+        startService(mServiceIntent);
+        //start the Receive Service
+
         setContentView(R.layout.activity_chat_list);
         BuddyArray=buddydata_fromsqltoArray();
         initate_the_buddyListview();
