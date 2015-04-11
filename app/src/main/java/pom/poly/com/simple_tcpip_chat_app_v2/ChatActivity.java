@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -30,7 +29,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     private Button btSend;
     private EditText edSend;
     private String phoneNumber;
-    private ArrayAdapter adapter;
+    private ChatArrayAdapter adapter;
     private ArrayList<String> chtaHistoryArray = new ArrayList<String>();
     private ResponseReceiver rr;
 
@@ -43,7 +42,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         ab.setTitle(phoneNumber);
         //set the array adapter and chatListView
         chatListView = (ListView) findViewById(R.id.lvChatHistory);
-        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, chtaHistoryArray);
+        adapter = new ChatArrayAdapter(getApplicationContext(), R.layout.activity_chat_singlemessage, chtaHistoryArray);
         chatListView.setAdapter(adapter);
 
 
