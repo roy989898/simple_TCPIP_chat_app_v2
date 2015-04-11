@@ -8,7 +8,8 @@
     android:orientation="vertical"
     android:background="#ffffdbaf"
     android:baselineAligned="false"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:id="@+id/">
 
     <TextView
         android:layout_width="match_parent"
@@ -25,5 +26,6 @@
         android:layout_width="match_parent"
         android:layout_height="467dp"
         android:id="@+id/lv_buddy"
-        android:layout_weight="0.54" />
+        android:layout_weight="0.54"
+        android:background="#ffffdbaf" />
 </LinearLayout>
