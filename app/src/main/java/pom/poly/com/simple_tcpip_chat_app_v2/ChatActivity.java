@@ -30,7 +30,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     private EditText edSend;
     private String phoneNumber;
     private ChatArrayAdapter adapter;
-    private ArrayList<String> chtaHistoryArray = new ArrayList<String>();
+    private ArrayList<Message> chtaHistoryArray = new ArrayList<Message>();
     private ResponseReceiver rr;
 
     @Override
@@ -50,14 +50,15 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         edSend = (EditText) findViewById(R.id.etSed);
 
         //temp for test the Chatarray
-        chtaHistoryArray.add("test1");
-        chtaHistoryArray.add("test2");
-        chtaHistoryArray.add("test3");
-        chtaHistoryArray.add("test3");
-        chtaHistoryArray.add("test3");
-        chtaHistoryArray.add("test3");
-        chtaHistoryArray.add("test3");
-        chtaHistoryArray.add("test3");
+        chtaHistoryArray.add(new Message("test1", true));
+        chtaHistoryArray.add(new Message("2", false));
+        chtaHistoryArray.add(new Message("tews3", true));
+        chtaHistoryArray.add(new Message("test4", false));
+        chtaHistoryArray.add(new Message("tes5", true));
+        chtaHistoryArray.add(new Message("test6", false));
+        chtaHistoryArray.add(new Message("test7", true));
+        chtaHistoryArray.add(new Message("test8", false));
+        chtaHistoryArray.add(new Message("test9", true));
         //temp for test the Chatarray
 
         btSend.setOnClickListener(this);
@@ -126,6 +127,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         //close
         budySQLHelp.close();
         adapter.notifyDataSetChanged();
+        chatListView.setSelection(chatListView.getCount() - 1);
     }
 
     @Override
@@ -207,7 +209,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
                 // sen the Message
                 os.println(edSend.getText().toString());
                 os.flush();
-                Thread.sleep(400);
+                Thread.sleep(8000);
                 os.close();//关闭Socket输出流
                 socket.close();//关闭Socket
                 return SUCCESS_SEND;//
