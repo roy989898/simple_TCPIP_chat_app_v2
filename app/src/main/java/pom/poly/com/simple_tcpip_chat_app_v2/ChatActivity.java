@@ -1,9 +1,14 @@
 package pom.poly.com.simple_tcpip_chat_app_v2;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +32,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     private String phoneNumber;
     private ArrayAdapter adapter;
     private ArrayList<String> chtaHistoryArray = new ArrayList<String>();
+    private ResponseReceiver rr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +54,26 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         chtaHistoryArray.add("test1");
         chtaHistoryArray.add("test2");
         chtaHistoryArray.add("test3");
+        chtaHistoryArray.add("test3");
+        chtaHistoryArray.add("test3");
+        chtaHistoryArray.add("test3");
+        chtaHistoryArray.add("test3");
+        chtaHistoryArray.add("test3");
         //temp for test the Chatarray
 
         btSend.setOnClickListener(this);
-
-
+        RegisterBrodcastReciver();
         reflashAndShowAlltheChatHistory();
 
+    }
 
+    private void RegisterBrodcastReciver() {
+        // IntentFilter mStatusIntentFilter = new IntentFilter(Config.BROADCAST_ACTION+phoneNumber);//use + phonenumber to reg
+        IntentFilter mStatusIntentFilter = new IntentFilter(Config.BROADCAST_ACTION);//use + phonenumber to reg //TODO for Test
+        rr = new ResponseReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                rr,
+                mStatusIntentFilter);
     }
 
 
@@ -115,9 +133,8 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View v) {
         //this code just for try the TCPIP
         // Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveIntentService.class);// old method, cnt use IntentService
-        //TODO send message here to the server, use a new Socket
         new SendMessageTask().execute();
-
+        //TODO save message
 
 
     }
@@ -207,5 +224,16 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         }
 
 
+    }
+
+    // Broadcast receiver for receiving status updates from the IntentService
+    private class ResponseReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //TODO on receive do a here
+            //load from sql to array
+            //refresh
+
+        }
     }
 }

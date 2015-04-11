@@ -28,6 +28,7 @@ public class BuddyAndChatListContentProvider extends ContentProvider {
         sUriMatcher.addURI(AUTHORITY, BuddyListSQLiteHelper.TABLE_BUDDYS, DB_TABLE_BUDDY);
         sUriMatcher.addURI(AUTHORITY, BuddyListSQLiteHelper.TABLE_CHAT_HISTORY, DB_TABLE_CHATHISTORY);
     }
+
     private SQLiteDatabase database;
 
     public BuddyAndChatListContentProvider() {
@@ -60,7 +61,7 @@ public class BuddyAndChatListContentProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        // TODO: Implement this to handle requests for the MIME type of the data
+
         // at the given URI.
         throw new UnsupportedOperationException("Not yet implemented");
     }
@@ -318,7 +319,7 @@ public class BuddyAndChatListContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        // TODO: Implement this to handle requests to update one or more rows.
+
         throw new UnsupportedOperationException("Not yet implemented");
     }
 }
