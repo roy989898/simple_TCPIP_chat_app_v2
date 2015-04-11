@@ -8,7 +8,9 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:weightSum="10"
-    tools:context="pom.poly.com.simple_tcpip_chat_app_v2.ChatActivity">
+    tools:context="pom.poly.com.simple_tcpip_chat_app_v2.ChatActivity"
+    android:background="#ffffdbaf"
+    android:id="@+id/">
 
     <ListView
         android:id="@+id/lvChatHistory"
@@ -33,10 +35,11 @@
 
         <Button
             android:id="@+id/btSEnd"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Send" />
+            android:text="Send"
+            android:layout_weight="0.55"
+            android:background="#ffffefdd" />
     </LinearLayout>
 
 </LinearLayout>
