@@ -15,7 +15,6 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.54"
         android:autoText="false"
         android:background="#ffd0b08d"
         android:elegantTextHeight="false"
