@@ -3,8 +3,8 @@ package pom.poly.com.simple_tcpip_chat_app_v2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +25,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         btReg=(Button)findViewById(R.id.btReg);
         btReg.setOnClickListener(this);
         sp=getSharedPreferences(Config.SP_NAME, Context.MODE_PRIVATE);
+        Config.SERVER_IP = sp.getString(Config.SP_KEY_SERVER_IP, Config.SERVER_IP);
         if(sp.contains(Config.SP_PHONE_KEY)){
             gotoChatList();
         }

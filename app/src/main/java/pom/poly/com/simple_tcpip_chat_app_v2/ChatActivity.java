@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,17 +52,6 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         edSend = (EditText) findViewById(R.id.etSed);
 
         mContRes = getContentResolver();
-        //temp for test the Chatarray
-        /*chtaHistoryArray.add(new Message("test1", true));
-        chtaHistoryArray.add(new Message("2", false));
-        chtaHistoryArray.add(new Message("tews3", true));
-        chtaHistoryArray.add(new Message("test4", false));
-        chtaHistoryArray.add(new Message("tes5", true));
-        chtaHistoryArray.add(new Message("test6", false));
-        chtaHistoryArray.add(new Message("test7", true));
-        chtaHistoryArray.add(new Message("test8", false));
-        chtaHistoryArray.add(new Message("test9", true));*/
-        //temp for test the Chatarray
         chtaHistoryArray.add(new Message("2", false));
 
         btSend.setOnClickListener(this);
@@ -83,11 +70,11 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_chat, menu);
-        return true;
+        return false;
     }
 
     @Override
@@ -103,7 +90,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     private void reflashAndShowAlltheChatHistory() {
         //get the BUDDY Sql helper
