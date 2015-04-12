@@ -1,5 +1,7 @@
 package pom.poly.com.simple_tcpip_chat_app_v2;
 
+import android.util.Log;
+
 /**
  * Created by User on 2/4/2015.
  */
@@ -21,6 +23,7 @@ public class Config {
     public static final String INTENT_KEY_FROM_ = "f";
     public static final String INTENT_KEY_TO_ = "t";
     public static final String INTENT_KEY_MESSAGE_ = "m";
+    public static final int THREAD_SLEEP_TIME = 200;
 
 
     public static String HelloMessage(String phoneNumber) {
@@ -30,6 +33,7 @@ public class Config {
 
     public static String[] alalysisTheReceiveMessage(String message) {
         //message.matches("f[0-9]+t[0-9]+m.+");
+        Log.d("onHandleIntent", "raw: message");
         String[] sa = new String[3];
         if (message.matches("f[0-9]+t[0-9]+m.+")) {
             sa[0] = message.substring(message.indexOf('f') + 1, message.indexOf('t'));
@@ -37,7 +41,7 @@ public class Config {
             sa[2] = message.substring(message.indexOf('m') + 1);
             return sa;
         } else {
-            return new String[]{};
+            return new String[3];
         }
     }
 

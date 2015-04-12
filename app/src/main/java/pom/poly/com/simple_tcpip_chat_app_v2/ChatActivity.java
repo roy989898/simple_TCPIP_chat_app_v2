@@ -146,7 +146,6 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         //this code just for try the TCPIP
-        // Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveIntentService.class);// old method, cnt use IntentService
         new SendMessageTask().execute();
         //TODO save message
 
@@ -225,7 +224,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
                 // sen the Message
                 os.println(Config.createSendMessage(getSharedPreferences(Config.SP_NAME, MODE_PRIVATE).getString(Config.SP_PHONE_KEY, "00"), phoneNumber, edSend.getText().toString()));
                 os.flush();
-                Thread.sleep(400);
+                Thread.sleep(Config.THREAD_SLEEP_TIME);
                 os.close();//关闭Socket输出流
                 socket.close();//关闭Socket
                 return SUCCESS_SEND;//

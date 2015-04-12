@@ -184,18 +184,23 @@ public class MessageReciveService extends Service {
                     Log.d("onHandleIntent", "From server: " + str);
                     //TODO to classif the different typr of message adn save them to the Sqlite server use 正規表示式 ,asyn task
                     String[] ftm = Config.alalysisTheReceiveMessage(str);
-                    showNotification(ftm[2], ftm[1]);
-                    //save in to the sql,using a new thread,by asynctask
-                    SaveMessageToSqlAsyncTask task = new SaveMessageToSqlAsyncTask(ftm[0], ftm[1], ftm[2]);
-                    task.execute();
-                    //TODO  save in to the sql
-                    sendBrodcastMessage(ftm[0], ftm[1], ftm[2]);
+
+                    if (ftm[0] != null) {// because some time the server will get a message don't match "f[0-9]+t[0-9]+m.+"
+                        showNotification(ftm[2], ftm[1]);
+                        //save in to the sql,using a new thread,by asynctask
+                        SaveMessageToSqlAsyncTask task = new SaveMessageToSqlAsyncTask(ftm[0], BuddyListSQLiteHelper.MESSAGE_TYPE_RECEIVE, ftm[2]);
+                        task.execute();
+                        //TODO  save in to the sql
+                        sendBrodcastMessage(ftm[0], ftm[1], ftm[2]);
+                    }
 
 
                 }
             } catch (Exception e) {
                 threadNumber = threadNumber - 1;
                 e.printStackTrace();
+                Log.d("onHandleIntent", "Quit");
+                Log.d("onHandleIntent", e.toString());
 
 
             }
