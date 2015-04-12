@@ -1,8 +1,20 @@
 package pom.poly.com.simple_tcpip_chat_app_v2;
 
+import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -17,6 +29,7 @@ public class MessageReciveService extends Service {
     private BufferedReader is;
     private PrintWriter os;
     private int threadNumber = 0;
+    private NotificationManager notificationManager;
 
 
     public MessageReciveService() {
@@ -71,6 +84,7 @@ public class MessageReciveService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         rmt = new ReceiveMessageThread();
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (threadNumber < 1) {// prevent to create more than one thread at a Client to connect to the server
             rmt.start();
             threadNumber++;
@@ -88,6 +102,8 @@ public class MessageReciveService extends Service {
      */
     @Override
     public void onDestroy() {
+        if (threadNumber > 0)
+            threadNumber = threadNumber - 1;
         super.onDestroy();
         try {
             is.close();//关闭Socket输入流
@@ -96,7 +112,7 @@ public class MessageReciveService extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        threadNumber = threadNumber - 1;
+
 
     }
 
@@ -106,6 +122,44 @@ public class MessageReciveService extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    private void sendBrodcastMessage(String stg) {
+        Intent localIntent =
+                new Intent(Config.BROADCAST_ACTION)//TODO need to change to Config.BROADCAST_ACTION+phonenumber
+                        // Puts the status into the Intent
+                        .putExtra(Config.EXTENDED_DATA_STATUS, stg);
+        // Broadcasts the Intent to receivers in this app.
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(localIntent);
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void showNotification(String message, String toPhonenumber) {
+        //create the Intent to open the ChatActivity for a specific phonnumber
+        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+        intent.putExtra(Config.INTENT_PHONENUMBER, toPhonenumber);
+        // put the intent into the PendingIntent
+
+        PendingIntent pendingintent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+        //set the notification message
+        Notification.Builder builder = new Notification.Builder(getApplicationContext());
+        builder.setAutoCancel(true);//Make this notification automatically dismissed when the user touches it
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_dialog_info);
+        builder.setLargeIcon(bmp);
+        builder.setSmallIcon(android.R.drawable.ic_dialog_info);
+        builder.setTicker(toPhonenumber + ": " + message);
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        builder.setSound(uri);
+        builder.setContentTitle(toPhonenumber);
+        builder.setContentText(message);
+        builder.setContentIntent(pendingintent);
+        builder.setVibrate(Config.VIBRATE_PATTERN);
+        //builder.setNumber(5);
+        //create Message
+        notificationManager.notify(Config.MY_NOTIFICATION_ID, builder.build());
+
+
+    }
+
     private class ReceiveMessageThread extends Thread {
 
         public void run() {
@@ -113,17 +167,25 @@ public class MessageReciveService extends Service {
                 socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);
                 is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 os = new PrintWriter(socket.getOutputStream());
+                SharedPreferences sp = getSharedPreferences(Config.SP_NAME, Context.MODE_PRIVATE);
+                String phonenumber = sp.getString(Config.SP_PHONE_KEY, "00");
+                os.println(Config.HelloMessage(phonenumber));//for test
+                os.flush();//for test
                 while (true) {
                     //os.println("get time");//for test
                     //os.flush();//for test
                     Log.d("onHandleIntent", "in loop");
                     String str = is.readLine();//从系统标准输入读入一字符串
                     Log.d("onHandleIntent", "From server: " + str);
+                    showNotification(str, "999");
                     //TODO to classif the different typr of message adn save them to the Sqlite server use 正規表示式 ,asyn task
-                    //TODO  Notify the message and show the to the UI
+                    //TODO  save in to the sql
+                    sendBrodcastMessage(str);
+
 
                 }
             } catch (Exception e) {
+                threadNumber = threadNumber - 1;
                 e.printStackTrace();
 
 
@@ -131,4 +193,5 @@ public class MessageReciveService extends Service {
 
         }
     }
+
 }

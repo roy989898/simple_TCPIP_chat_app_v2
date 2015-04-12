@@ -1,14 +1,18 @@
 package pom.poly.com.simple_tcpip_chat_app_v2;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -25,8 +29,9 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     private Button btSend;
     private EditText edSend;
     private String phoneNumber;
-    private ArrayAdapter adapter;
-    private ArrayList<String> chtaHistoryArray = new ArrayList<String>();
+    private ChatArrayAdapter adapter;
+    private ArrayList<Message> chtaHistoryArray = new ArrayList<Message>();
+    private ResponseReceiver rr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         ab.setTitle(phoneNumber);
         //set the array adapter and chatListView
         chatListView = (ListView) findViewById(R.id.lvChatHistory);
-        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, chtaHistoryArray);
+        adapter = new ChatArrayAdapter(getApplicationContext(), R.layout.activity_chat_singlemessage, chtaHistoryArray);
         chatListView.setAdapter(adapter);
 
 
@@ -45,17 +50,30 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         edSend = (EditText) findViewById(R.id.etSed);
 
         //temp for test the Chatarray
-        chtaHistoryArray.add("test1");
-        chtaHistoryArray.add("test2");
-        chtaHistoryArray.add("test3");
+        chtaHistoryArray.add(new Message("test1", true));
+        chtaHistoryArray.add(new Message("2", false));
+        chtaHistoryArray.add(new Message("tews3", true));
+        chtaHistoryArray.add(new Message("test4", false));
+        chtaHistoryArray.add(new Message("tes5", true));
+        chtaHistoryArray.add(new Message("test6", false));
+        chtaHistoryArray.add(new Message("test7", true));
+        chtaHistoryArray.add(new Message("test8", false));
+        chtaHistoryArray.add(new Message("test9", true));
         //temp for test the Chatarray
 
         btSend.setOnClickListener(this);
-
-
+        RegisterBrodcastReciver();
         reflashAndShowAlltheChatHistory();
 
+    }
 
+    private void RegisterBrodcastReciver() {
+        // IntentFilter mStatusIntentFilter = new IntentFilter(Config.BROADCAST_ACTION+phoneNumber);//use + phonenumber to reg
+        IntentFilter mStatusIntentFilter = new IntentFilter(Config.BROADCAST_ACTION);//use + phonenumber to reg //TODO for Test
+        rr = new ResponseReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                rr,
+                mStatusIntentFilter);
     }
 
 
@@ -109,15 +127,15 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         //close
         budySQLHelp.close();
         adapter.notifyDataSetChanged();
+        chatListView.setSelection(chatListView.getCount() - 1);
     }
 
     @Override
     public void onClick(View v) {
         //this code just for try the TCPIP
         // Intent mServiceIntent = new Intent(getApplicationContext(), MessageReciveIntentService.class);// old method, cnt use IntentService
-        //TODO send message here to the server, use a new Socket
         new SendMessageTask().execute();
-
+        //TODO save message
 
 
     }
@@ -207,5 +225,16 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         }
 
 
+    }
+
+    // Broadcast receiver for receiving status updates from the IntentService
+    private class ResponseReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //TODO on receive do a here
+            //load from sql to array
+            //refresh
+
+        }
     }
 }

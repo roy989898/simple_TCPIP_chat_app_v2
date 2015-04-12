@@ -12,10 +12,13 @@
 
     <ListView
         android:id="@+id/lvChatHistory"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
-        android:choiceMode="none" />
+        android:choiceMode="none"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:scrollbars="none" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -38,4 +41,5 @@
             android:layout_weight="1"
             android:text="Send" />
     </LinearLayout>
+
 </LinearLayout>
