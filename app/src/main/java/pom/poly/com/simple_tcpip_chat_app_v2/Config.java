@@ -10,7 +10,7 @@ public class Config {
     public final static String SERVER_IP = "192.168.56.1";
     public final static int MY_NOTIFICATION_ID = 101;
     public final static long[] VIBRATE_PATTERN = {0, 100, 200, 300};//fist number is the vibrate stoptime ,second is the vibrate start time, third is the vibrate stoptime.....
-    //192.168.31.170  ad
+    //192.168.31.170  ad  taco try okok?
     //192.168.56.1   g
     public final static int SERVER_PORT = 5527;
     public static final String BROADCAST_ACTION =
