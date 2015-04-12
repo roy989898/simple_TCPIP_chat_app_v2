@@ -21,7 +21,7 @@ public class Config {
 
     public static String HelloMessage(String phoneNumber) {
 
-        return "i am : " + phoneNumber;
+        return "iam:" + phoneNumber;
     }
 
     public static String[] alalysisTheReceiveMessage(String message) {
