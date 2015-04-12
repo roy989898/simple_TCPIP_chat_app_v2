@@ -209,7 +209,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
                 // sen the Message
                 os.println(edSend.getText().toString());
                 os.flush();
-                Thread.sleep(8000);
+                Thread.sleep(400);
                 os.close();//关闭Socket输出流
                 socket.close();//关闭Socket
                 return SUCCESS_SEND;//

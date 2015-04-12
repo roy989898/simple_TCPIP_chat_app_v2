@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
@@ -166,6 +167,10 @@ public class MessageReciveService extends Service {
                 socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);
                 is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 os = new PrintWriter(socket.getOutputStream());
+                SharedPreferences sp = getSharedPreferences(Config.SP_NAME, Context.MODE_PRIVATE);
+                String phonenumber = sp.getString(Config.SP_PHONE_KEY, "00");
+                os.println(Config.HelloMessage(phonenumber));//for test
+                os.flush();//for test
                 while (true) {
                     //os.println("get time");//for test
                     //os.flush();//for test
