@@ -12,6 +12,7 @@ import android.database.DataSetObserver;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 public class BuddyAndChatListContentProvider extends ContentProvider {
     private static final int URI_ROOT = 0, DB_TABLE_BUDDY = 1, DB_TABLE_CHATHISTORY = 2;
@@ -72,6 +73,7 @@ public class BuddyAndChatListContentProvider extends ContentProvider {
         if (sUriMatcher.match(uri) == DB_TABLE_BUDDY) {
             long rowId = database.insert(BuddyListSQLiteHelper.TABLE_BUDDYS, null, values);
             //get the uri for the newly inserted item.
+            Log.d("inSQL", rowId + "");
             Uri insertedRowUri = ContentUris.withAppendedId(CONTENT_URI_BUDDY, rowId);
             //在ContentProvider的insert,update,delete等改变之后调用,通知那些监测databases变化的observer
             getContext().getContentResolver().notifyChange(insertedRowUri, null);
@@ -81,6 +83,7 @@ public class BuddyAndChatListContentProvider extends ContentProvider {
         if (sUriMatcher.match(uri) == DB_TABLE_CHATHISTORY) {
             long rowId = database.insert(BuddyListSQLiteHelper.TABLE_CHAT_HISTORY, null, values);
             //get the uri for the newly inserted item.
+            Log.d("inSQL", rowId + "");
             Uri insertedRowUri = ContentUris.withAppendedId(CONTENT_URI_CHAT, rowId);
             //在ContentProvider的insert,update,delete等改变之后调用,通知那些监测databases变化的observer
             getContext().getContentResolver().notifyChange(insertedRowUri, null);
@@ -108,7 +111,7 @@ public class BuddyAndChatListContentProvider extends ContentProvider {
         }
         String[] d2_column = {BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MTYPE, BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MESSAGE, BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_PHONENUMNER};
         if (sUriMatcher.match(uri) == DB_TABLE_CHATHISTORY) {
-            Cursor cursor = database.query(BuddyListSQLiteHelper.TABLE_BUDDYS, d2_column, selection, selectionArgs, null, null, sortOrder);
+            Cursor cursor = database.query(BuddyListSQLiteHelper.TABLE_CHAT_HISTORY, d2_column, selection, selectionArgs, null, null, sortOrder);
             return cursor;
 
         }

@@ -5,6 +5,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -118,15 +121,17 @@ public class MessageReciveService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
+
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private void sendBrodcastMessage(String stg) {
+    private void sendBrodcastMessage(String F, String T, String M) {
         Intent localIntent =
-                new Intent(Config.BROADCAST_ACTION)//TODO need to change to Config.BROADCAST_ACTION+phonenumber
+                new Intent(Config.BROADCAST_ACTION + F)//TODO need to change to Config.BROADCAST_ACTION+phonenumber
                         // Puts the status into the Intent
-                        .putExtra(Config.EXTENDED_DATA_STATUS, stg);
+                        .putExtra(Config.INTENT_KEY_FROM_, F);
+        localIntent.putExtra(Config.INTENT_KEY_TO_, F);
+        localIntent.putExtra(Config.INTENT_KEY_MESSAGE_, M);
         // Broadcasts the Intent to receivers in this app.
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(localIntent);
     }
@@ -177,10 +182,14 @@ public class MessageReciveService extends Service {
                     Log.d("onHandleIntent", "in loop");
                     String str = is.readLine();//从系统标准输入读入一字符串
                     Log.d("onHandleIntent", "From server: " + str);
-                    showNotification(str, "999");
                     //TODO to classif the different typr of message adn save them to the Sqlite server use 正規表示式 ,asyn task
+                    String[] ftm = Config.alalysisTheReceiveMessage(str);
+                    showNotification(ftm[2], ftm[1]);
+                    //save in to the sql,using a new thread,by asynctask
+                    SaveMessageToSqlAsyncTask task = new SaveMessageToSqlAsyncTask(ftm[0], ftm[1], ftm[2]);
+                    task.execute();
                     //TODO  save in to the sql
-                    sendBrodcastMessage(str);
+                    sendBrodcastMessage(ftm[0], ftm[1], ftm[2]);
 
 
                 }
@@ -192,6 +201,41 @@ public class MessageReciveService extends Service {
             }
 
         }
+    }
+
+    class SaveMessageToSqlAsyncTask extends AsyncTask {
+        String F, MessageType, M;
+
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         * <p/>
+         * This method can call {@link #publishProgress} to publish updates
+         * on the UI thread.
+         *
+         * @return A result, defined by the subclass of this task.
+         * @see #onPreExecute()
+         * @see #onPostExecute
+         * @see #publishProgress
+         */
+        public SaveMessageToSqlAsyncTask(String F, String MessageType, String M) {
+            this.F = F;
+            this.MessageType = MessageType;
+            this.M = M;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            ContentResolver mContRes = getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_PHONENUMNER, F);
+            values.put(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MESSAGE, M);
+            values.put(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MTYPE, MessageType);
+            mContRes.insert(BuddyAndChatListContentProvider.CONTENT_URI_CHAT, values);
+            return null;
+        }
+
     }
 
 }

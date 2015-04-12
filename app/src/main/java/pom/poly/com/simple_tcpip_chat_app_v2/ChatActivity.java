@@ -1,6 +1,8 @@
 package pom.poly.com.simple_tcpip_chat_app_v2;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -10,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +35,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     private ChatArrayAdapter adapter;
     private ArrayList<Message> chtaHistoryArray = new ArrayList<Message>();
     private ResponseReceiver rr;
+    private ContentResolver mContRes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +53,9 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         btSend = (Button) findViewById(R.id.btSEnd);
         edSend = (EditText) findViewById(R.id.etSed);
 
+        mContRes = getContentResolver();
         //temp for test the Chatarray
-        chtaHistoryArray.add(new Message("test1", true));
+        /*chtaHistoryArray.add(new Message("test1", true));
         chtaHistoryArray.add(new Message("2", false));
         chtaHistoryArray.add(new Message("tews3", true));
         chtaHistoryArray.add(new Message("test4", false));
@@ -58,8 +63,9 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         chtaHistoryArray.add(new Message("test6", false));
         chtaHistoryArray.add(new Message("test7", true));
         chtaHistoryArray.add(new Message("test8", false));
-        chtaHistoryArray.add(new Message("test9", true));
+        chtaHistoryArray.add(new Message("test9", true));*/
         //temp for test the Chatarray
+        chtaHistoryArray.add(new Message("2", false));
 
         btSend.setOnClickListener(this);
         RegisterBrodcastReciver();
@@ -69,7 +75,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
 
     private void RegisterBrodcastReciver() {
         // IntentFilter mStatusIntentFilter = new IntentFilter(Config.BROADCAST_ACTION+phoneNumber);//use + phonenumber to reg
-        IntentFilter mStatusIntentFilter = new IntentFilter(Config.BROADCAST_ACTION);//use + phonenumber to reg //TODO for Test
+        IntentFilter mStatusIntentFilter = new IntentFilter(Config.BROADCAST_ACTION + phoneNumber);//use + phonenumber to reg //TODO for Test
         rr = new ResponseReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 rr,
@@ -100,7 +106,6 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void reflashAndShowAlltheChatHistory() {
-        ArrayList chtaHistoryArray = new ArrayList();
         //get the BUDDY Sql helper
         BuddyListSQLiteHelper budySQLHelp = new BuddyListSQLiteHelper(getApplicationContext());
         //get the databases
@@ -108,16 +113,24 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         String[] d_column = {BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MTYPE, BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MESSAGE};
         //query to the database,need all the phone number
         String[] where = {phoneNumber};
-        Cursor cursor = database.query(BuddyListSQLiteHelper.TABLE_CHAT_HISTORY, d_column, BuddyListSQLiteHelper.COLUMN_PHONENUMNER + " =?", where, null, null, null);
+        //Cursor cursor = database.query(BuddyListSQLiteHelper.TABLE_CHAT_HISTORY, d_column, BuddyListSQLiteHelper.COLUMN_PHONENUMNER + " =?", where, null, null, null);
+        //Cursor cursor=mContRes.query(BuddyAndChatListContentProvider.CONTENT_URI_CHAT,null,BuddyListSQLiteHelper.COLUMN_PHONENUMNER + "=?",where,null);
+        Cursor cursor = mContRes.query(BuddyAndChatListContentProvider.CONTENT_URI_CHAT, null, null, null, null);
+        Log.d("from", cursor.getCount() + "");
+        Log.d("from", cursor.getColumnName(0) + "");
+        Log.d("from", cursor.getColumnName(1) + "");
+        Log.d("from", cursor.getColumnName(2) + "");
         //move the data from ccursor to arraylist
         //nee to determine the message type, receive from other, or send to other
         if (cursor.moveToFirst()) {
             do {
-                if (cursor.getString(cursor.getColumnIndex(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MTYPE)) == BuddyListSQLiteHelper.MESSAGE_TYPE_RECEIVE) {
-                    chtaHistoryArray.add("SEND" + cursor.getString(cursor.getColumnIndex(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MESSAGE)));
+                if (cursor.getString(cursor.getColumnIndex(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MTYPE)).equals(BuddyListSQLiteHelper.MESSAGE_TYPE_RECEIVE)) {
+                    Log.d("from", "L");
+                    chtaHistoryArray.add(new Message(cursor.getString(cursor.getColumnIndex(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MESSAGE)), true));
                 }
-                if (cursor.getString(cursor.getColumnIndex(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MTYPE)) == BuddyListSQLiteHelper.MESSAGE_TYPE_SEND) {
-                    chtaHistoryArray.add("RECEIVE" + cursor.getString(cursor.getColumnIndex(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MESSAGE)));
+                if (cursor.getString(cursor.getColumnIndex(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MTYPE)).equals(BuddyListSQLiteHelper.MESSAGE_TYPE_SEND)) {
+                    Log.d("from", "R");
+                    chtaHistoryArray.add(new Message(cursor.getString(cursor.getColumnIndex(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MESSAGE)), false));
                 }
 
 
@@ -180,8 +193,11 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
                 //send not success
                 Toast.makeText(getApplicationContext(), "can't,try later", Toast.LENGTH_LONG).show();
             } else {
-                //Success
+                //Success,save the Mesage
+                SaveMessageToSqlAsyncTask task = new SaveMessageToSqlAsyncTask(BuddyListSQLiteHelper.MESSAGE_TYPE_SEND, phoneNumber, edSend.getText().toString());//MessageType T M
+                task.execute();//start to save to SQL by ContentProvider
                 edSend.setText("");
+                reflashAndShowAlltheChatHistory();
             }
         }
 
@@ -207,7 +223,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
                 socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);
                 PrintWriter os = new PrintWriter(socket.getOutputStream());
                 // sen the Message
-                os.println(edSend.getText().toString());
+                os.println(Config.createSendMessage(getSharedPreferences(Config.SP_NAME, MODE_PRIVATE).getString(Config.SP_PHONE_KEY, "00"), phoneNumber, edSend.getText().toString()));
                 os.flush();
                 Thread.sleep(400);
                 os.close();//关闭Socket输出流
@@ -234,7 +250,43 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
             //TODO on receive do a here
             //load from sql to array
             //refresh
+            reflashAndShowAlltheChatHistory();
 
         }
+    }
+
+    class SaveMessageToSqlAsyncTask extends AsyncTask {
+        String MessageType, T, M;
+
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         * <p/>
+         * This method can call {@link #publishProgress} to publish updates
+         * on the UI thread.
+         *
+         * @return A result, defined by the subclass of this task.
+         * @see #onPreExecute()
+         * @see #onPostExecute
+         * @see #publishProgress
+         */
+        public SaveMessageToSqlAsyncTask(String MessageType, String T, String M) {
+            this.MessageType = MessageType;
+            this.T = T;
+            this.M = M;
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            ContentResolver mContRes = getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_PHONENUMNER, T);
+            values.put(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MESSAGE, M);
+            values.put(BuddyListSQLiteHelper.COLUMN_CHAT_HISTORY_MTYPE, MessageType);
+            mContRes.insert(BuddyAndChatListContentProvider.CONTENT_URI_CHAT, values);
+            return null;
+        }
+
     }
 }

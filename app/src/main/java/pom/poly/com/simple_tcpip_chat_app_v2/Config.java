@@ -4,8 +4,8 @@ package pom.poly.com.simple_tcpip_chat_app_v2;
  * Created by User on 2/4/2015.
  */
 public class Config {
-    public final static String SP_PHONE_KEY="phonenumber";
-    public final static String SP_NAME="userphone";
+    public final static String SP_PHONE_KEY = "phonenumber";
+    public final static String SP_NAME = "userphone";
     public final static String INTENT_PHONENUMBER = "phonenumber";
     public final static String SERVER_IP = "192.168.56.1";
     public final static int MY_NOTIFICATION_ID = 101;
@@ -18,6 +18,10 @@ public class Config {
 
     public static final String EXTENDED_DATA_STATUS =
             "pom.poly.com.simple_tcpip_chat_app_v2.STATUS";
+    public static final String INTENT_KEY_FROM_ = "f";
+    public static final String INTENT_KEY_TO_ = "t";
+    public static final String INTENT_KEY_MESSAGE_ = "m";
+
 
     public static String HelloMessage(String phoneNumber) {
 
