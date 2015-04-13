@@ -52,8 +52,6 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         edSend = (EditText) findViewById(R.id.etSed);
 
         mContRes = getContentResolver();
-        chtaHistoryArray.add(new Message("2", false));
-
         btSend.setOnClickListener(this);
         RegisterBrodcastReciver();
         reflashAndShowAlltheChatHistory();
