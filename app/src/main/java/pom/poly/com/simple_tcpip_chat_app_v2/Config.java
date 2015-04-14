@@ -3,7 +3,7 @@ package pom.poly.com.simple_tcpip_chat_app_v2;
 import android.util.Log;
 
 /**
- * Created by User on 2/4/2015.
+ * Created by User on 2/4/2015. test1504
  */
 public class Config {
     public final static String SP_PHONE_KEY = "phonenumber";
