@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffdbaf"
     android:baselineAligned="false"
@@ -11,20 +12,10 @@
     android:weightSum="1"
     tools:context="pom.poly.com.simple_tcpip_chat_app_v2.ChatListActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autoText="false"
-        android:background="#ffd0b08d"
-        android:elegantTextHeight="false"
-        android:text="Chat List"
-        android:textSize="50dp" />
-
     <ListView
         android:id="@+id/lv_buddy"
         android:layout_width="match_parent"
-        android:layout_height="467dp"
+        android:layout_height="fill_parent"
         android:layout_weight="0.54"
         android:background="#ffffdbaf" />
 </LinearLayout>

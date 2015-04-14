@@ -3,8 +3,10 @@ package pom.poly.com.simple_tcpip_chat_app_v2;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -78,6 +80,21 @@ public class ChatListActivity extends ActionBarActivity {
                     BuddyArray=buddydata_fromsqltoArray();
                     initate_the_buddyListview();
                     reflash_Budylist();
+
+                }
+            }).setNegativeButton("Cancel", null).show();
+            return true;
+        }
+        if (id == R.id.setip) {
+            //post a dialog box to input the phone number
+            edPhonenumber = new EditText(this);
+            new AlertDialog.Builder(this).setTitle("Please input the server IP").setIcon(android.R.drawable.ic_dialog_info).setView(edPhonenumber).setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    SharedPreferences sp = getSharedPreferences(Config.SP_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString(Config.SP_KEY_SERVER_IP, edPhonenumber.getText().toString());
 
                 }
             }).setNegativeButton("Cancel", null).show();

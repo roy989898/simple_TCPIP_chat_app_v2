@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="pom.poly.com.simple_tcpip_chat_app_v2.ChatListActivity">
-    <item android:id="@+id/adding" android:title="Add"
-        android:orderInCategory="100" app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/adding"
+        android:orderInCategory="100"
+        android:title="Add"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/setip"
+        android:orderInCategory="101"
+        android:title="IP Setting" />
 </menu>

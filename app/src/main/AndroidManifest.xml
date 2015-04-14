@@ -30,16 +30,12 @@
         </activity>
         <activity
             android:name=".ChatListActivity"
-            android:label="@string/title_activity_chat_list"
+            android:label="ChatList"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-
-        <service
-            android:name=".MessageReciveIntentService"
-            android:exported="false" />
 
         <provider
             android:name=".BuddyAndChatListContentProvider"
